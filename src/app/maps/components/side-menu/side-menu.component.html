@@ -1,1 +1,17 @@
-<p>side-menu works!</p>
+<aside id="default-sidebar"
+    class="fixed top-0 left-0 z-40 w-64 h-screen transition-transform -translate-x-full sm:translate-x-0"
+    aria-label="Sidebar">
+    <div class="h-full px-3 py-4 overflow-y-auto bg-gray-50 dark:bg-gray-800">
+        <ul class="space-y-2 font-medium">
+            <li *ngFor="let item of menuItems">
+                <a
+                    [routerLink]="item.route"
+                    [ngClass]="{'bg-indigo-800': router.isActive(item.route, false)}"
+                    class="flex items-center p-2 text-gray-900 transition-colors rounded-lg cursor-pointer dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group active:bg-indigo-800">
+                    <img [src]="item.icon" alt="{{ item.name }}" class="size-8">
+                    <span class="ms-3"> {{ item.name }}</span>
+                </a>
+            </li>
+        </ul>
+    </div>
+</aside>
