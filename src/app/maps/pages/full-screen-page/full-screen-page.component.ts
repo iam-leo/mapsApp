@@ -1,5 +1,5 @@
-import { AfterViewInit, Component } from '@angular/core';
-import * as tt from '@tomtom-international/web-sdk-maps';
+import { AfterViewInit, Component, ElementRef, ViewChild } from '@angular/core';
+import { map, NavigationControl } from '@tomtom-international/web-sdk-maps';
 import { environment } from '../../../../environments/environment';
 
 @Component({
@@ -7,17 +7,20 @@ import { environment } from '../../../../environments/environment';
   styles: ``
 })
 export class FullScreenPageComponent implements AfterViewInit {
+  @ViewChild('map') public divMap?: ElementRef;
 
   ngAfterViewInit(): void {
-    const map = tt.map({
+    if ( !this.divMap ) return
+
+    const fullscreenMap = map({
       key: environment.TOMTOM_KEY, // Usar API Key
-      container: 'map', // ID del elemento contenedor
+      container: this.divMap?.nativeElement, // ID del elemento contenedor
       center: [-64.183, -31.417], // Coordenadas iniciales [longitud, latitud]
       zoom: 5 // Nivel inicial de zoom
     });
 
     // Agregar controles de zoom
-    map.addControl(new tt.NavigationControl());
+    fullscreenMap.addControl(new NavigationControl());
   }
 
 }
