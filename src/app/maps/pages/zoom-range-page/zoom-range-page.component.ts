@@ -1,16 +1,17 @@
-import { AfterViewInit, Component, ElementRef, ViewChild } from '@angular/core';
-import { Map, map, NavigationControl } from '@tomtom-international/web-sdk-maps';
+import { AfterViewInit, Component, ElementRef, OnDestroy, ViewChild } from '@angular/core';
+import { LngLat, Map, map, NavigationControl } from '@tomtom-international/web-sdk-maps';
 import { environment } from '../../../../environments/environment';
 
 @Component({
   templateUrl: './zoom-range-page.component.html',
   styles: ``
 })
-export class ZoomRangePageComponent implements AfterViewInit {
+export class ZoomRangePageComponent implements AfterViewInit, OnDestroy {
   @ViewChild('map') public divMap?: ElementRef;
 
   public levelZoom: number = 10;
   public map?: Map;
+  public lnglat: LngLat = new LngLat(-64.183, -31.417);
 
   ngAfterViewInit(): void {
     if ( !this.divMap ) return
@@ -18,14 +19,19 @@ export class ZoomRangePageComponent implements AfterViewInit {
     this.map = map({
       key: environment.TOMTOM_KEY, // Usar API Key
       container: this.divMap?.nativeElement, // ID del elemento contenedor
-      center: [-64.183, -31.417], // Coordenadas iniciales [longitud, latitud]
+      center: this.lnglat, // Coordenadas iniciales [longitud, latitud]
       zoom: this.levelZoom // Nivel inicial de zoom
     });
+
 
     // Agregar controles de zoom
     this.map.addControl(new NavigationControl());
 
     this.mapListeners();
+  }
+
+  ngOnDestroy(): void {
+    this.map?.remove();
   }
 
   mapListeners() {
@@ -39,6 +45,11 @@ export class ZoomRangePageComponent implements AfterViewInit {
       if( this.map!.getZoom() < 18) return;
 
       this.map!.setZoom(18);
+    });
+
+    this.map.on('moveend', () => {
+      const lnglat = this.map!.getCenter();
+      this.lnglat = new LngLat(lnglat.lng, lnglat.lat);
     });
   }
 

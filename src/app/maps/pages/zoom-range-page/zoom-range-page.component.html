@@ -3,8 +3,8 @@
 <div class="fixed bottom-0 right-0 flex flex-col gap-3 p-3 mb-3 mr-2 rounded-lg bg-white/80">
     <div class="flex flex-col items-center">
         <span>Zoom: {{ levelZoom | number: '2.2-2' }}</span>
-        <span>Lat: {{ '12122' }}</span>
-        <span>Long: {{ '6546879' }}</span>
+        <span>Lat: {{ lnglat.lat }}</span>
+        <span>Long: {{ lnglat.lng }}</span>
     </div>
     <div class="flex gap-3">
         <button class="text-xl font-semibold text-white bg-blue-600 rounded-md size-8" (click)="zoomOut()"> - </button>
