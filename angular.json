@@ -37,7 +37,8 @@
               "src/assets"
             ],
             "styles": [
-              "src/styles.css"
+              "src/styles.css",
+              "node_modules/@tomtom-international/web-sdk-maps/dist/maps.css"
             ],
             "scripts": []
           },

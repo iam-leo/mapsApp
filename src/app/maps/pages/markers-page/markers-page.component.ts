@@ -1,42 +1,42 @@
-import { AfterViewInit, Component, ElementRef, ViewChild } from '@angular/core';
-import { LngLat, map, Map, Marker, NavigationControl } from '@tomtom-international/web-sdk-maps';
-import { environment } from '../../../../environments/environment';
+  import { AfterViewInit, Component, ElementRef, OnDestroy, ViewChild } from '@angular/core';
+  import { LngLat, map, Map, Marker, NavigationControl, Popup } from '@tomtom-international/web-sdk-maps';
+  import { environment } from '../../../../environments/environment';
 
-@Component({
-  templateUrl: './markers-page.component.html',
-  styles: ``
-})
-export class MarkersPageComponent implements AfterViewInit {
-  @ViewChild('map') public divMap?: ElementRef;
+  @Component({
+    templateUrl: './markers-page.component.html',
+    styles: ``
+  })
 
-  public levelZoom: number = 10;
-  public map?: Map;
-  public lnglat: LngLat = new LngLat(-58.64761325775214, -34.56477897222805);
+  export class MarkersPageComponent implements AfterViewInit, OnDestroy {
+    @ViewChild('map', { static: false }) public divMap?: ElementRef;
 
-  ngAfterViewInit(): void {
-    if ( !this.divMap ) return
+    public levelZoom: number = 10;
+    public map?: Map;
+    public lnglat: LngLat = new LngLat(-64.183, -31.417);
 
-    this.map = map({
-      key: environment.TOMTOM_KEY, // Usar API Key
-      container: this.divMap?.nativeElement, // ID del elemento contenedor
-      center: this.lnglat, // Coordenadas iniciales [longitud, latitud]
-      zoom: this.levelZoom // Nivel inicial de zoom
-    });
+    ngAfterViewInit(): void {
+      if ( !this.divMap ) return
 
-    console.log('Mapa inicializado:', this.map);
-    
-    // Agregar controles de zoom
-    this.map.addControl(new NavigationControl());
+      this.map = map({
+        key: environment.TOMTOM_KEY, // Usar API Key
+        container: this.divMap?.nativeElement, // ID del elemento contenedor
+        center: this.lnglat, // Coordenadas iniciales [longitud, latitud]
+        zoom: this.levelZoom // Nivel inicial de zoom
+      });
 
-    // Agregar un marker
-      this.map.on('load', () => {
-      console.log('✅ Mapa cargado. Agregando marcador...');
+      // Agregar controles de zoom
+      this.map.addControl(new NavigationControl());
 
-      const marker = new Marker({ anchor: 'top' }) // Asegura que el marcador esté centrado correctamente
-        .setLngLat(this.lnglat)
-        .addTo(this.map!);
+      // Agregar un marker
+        this.map.on('load', () => {
+          new Marker({ anchor: 'center' })
+            .setLngLat(this.lnglat)
+            .setPopup(new Popup({ offset: 25 }).setText('Ubicación Actual')) // add popups
+            .addTo(this.map!);
+      });
+    }
 
-      console.log('✅ Marcador agregado en:', this.lnglat);
-    });
+    ngOnDestroy(): void {
+    this.map?.remove();
   }
-}
+  }
