@@ -2,6 +2,11 @@
   import { LngLat, map, Map, Marker, NavigationControl, Popup } from '@tomtom-international/web-sdk-maps';
   import { environment } from '../../../../environments/environment';
 
+  interface MarkerAndColor {
+    marker: Marker;
+    color: string;
+  }
+
   @Component({
     templateUrl: './markers-page.component.html',
     styles: ``
@@ -13,6 +18,7 @@
     public levelZoom: number = 10;
     public map?: Map;
     public lnglat: LngLat = new LngLat(-64.183, -31.417);
+    public markers: MarkerAndColor[] = [];
 
     ngAfterViewInit(): void {
       if ( !this.divMap ) return
@@ -56,8 +62,16 @@
     addMarker( lnglat: LngLat, color: string = 'rgb(55, 48, 163)' ){
       if( !this.map ) return
 
-      new Marker({ anchor: 'center', color: color, draggable: true })
+      const marker = new Marker({ anchor: 'center', color: color, draggable: true })
         .setLngLat(lnglat)
         .addTo(this.map!);
+
+      this.markers.push( { marker, color } );
+    }
+
+    deleteMarker( index: number ){
+      if( !this.map ) return
+      this.markers[index].marker.remove();
+      this.markers.splice(index, 1);
     }
   }

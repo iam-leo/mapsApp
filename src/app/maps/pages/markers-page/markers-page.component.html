@@ -7,5 +7,5 @@
 </div>
 
 <ul class="fixed flex flex-col gap-1 p-3 mb-3 mr-2 rounded-lg right-10 top-2 bg-white/80">
-    <li class="px-4 py-2 text-white bg-blue-600 rounded-md"> Marker 1 </li>
+    <li *ngFor=" let marker of markers, let i = index" class="px-4 py-2 text-white rounded-md" [ngStyle]='{background: marker.color}' (dblclick)="deleteMarker(i)"> Marker {{ i + 1 }} </li>
 </ul>
