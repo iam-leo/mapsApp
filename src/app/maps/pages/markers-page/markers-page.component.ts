@@ -29,14 +29,35 @@
 
       // Agregar un marker
         this.map.on('load', () => {
-          new Marker({ anchor: 'center' })
+          new Marker({ anchor: 'center', color: 'rgb(55, 48, 163)' })
             .setLngLat(this.lnglat)
             .setPopup(new Popup({ offset: 25 }).setText('Ubicación Actual')) // add popups
             .addTo(this.map!);
       });
+
     }
 
     ngOnDestroy(): void {
-    this.map?.remove();
-  }
+      this.map?.remove();
+    }
+
+    createMarker(){
+      if( !this.map ) return
+
+      // Generar color aleatorio
+      const color = '#xxxxxx'.replace(/x/g, y=>(Math.random()*16|0).toString(16));
+
+      // Obtener coordenadas del centro
+      const lnglat = this.map.getCenter();
+
+      this.addMarker(lnglat, color);
+    }
+
+    addMarker( lnglat: LngLat, color: string = 'rgb(55, 48, 163)' ){
+      if( !this.map ) return
+
+      new Marker({ anchor: 'center', color: color, draggable: true })
+        .setLngLat(lnglat)
+        .addTo(this.map!);
+    }
   }
