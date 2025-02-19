@@ -74,4 +74,13 @@
       this.markers[index].marker.remove();
       this.markers.splice(index, 1);
     }
+
+    flyTo( marker: Marker ){
+      if( !this.map ) return
+      this.map.jumpTo({
+        pitch: 45,
+        center: [marker.getLngLat().lng, marker.getLngLat().lat],
+        zoom: 15
+      });
+    }
   }
