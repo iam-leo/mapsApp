@@ -7,6 +7,11 @@
     color: string;
   }
 
+  interface PlainMarker {
+    lnglat: number[];
+    color: string;
+  }
+
   @Component({
     templateUrl: './markers-page.component.html',
     styles: ``
@@ -29,6 +34,9 @@
         center: this.lnglat, // Coordenadas iniciales [longitud, latitud]
         zoom: this.levelZoom // Nivel inicial de zoom
       });
+
+      // Cargar marcadores desde el localStorage
+      this.loadFromLocalStorage();
 
       // Agregar controles de zoom
       this.map.addControl(new NavigationControl());
@@ -67,6 +75,7 @@
         .addTo(this.map!);
 
       this.markers.push( { marker, color } );
+      this.saveToLocalStorage();
     }
 
     deleteMarker( index: number ){
@@ -82,5 +91,35 @@
         center: [marker.getLngLat().lng, marker.getLngLat().lat],
         zoom: 15
       });
+    }
+
+    saveToLocalStorage(){
+      if( !this.map ) return
+
+      const plainMarkers: PlainMarker[] = this.markers.map( ({ marker, color }) => {
+        const lnglat = marker.getLngLat();
+        return {
+          lnglat: marker.getLngLat().toArray(),
+          color
+        };
+      });
+
+      localStorage.setItem('markers', JSON.stringify(plainMarkers));
+    }
+
+    loadFromLocalStorage(){
+      if( !this.map ) return
+
+      const plainMarkers = localStorage.getItem('markers') ?? '[]';
+
+      if( plainMarkers ){
+        const markers: PlainMarker[] = JSON.parse(plainMarkers);
+        markers.forEach( ({ lnglat, color }) => {
+          const [ lng, lat ] = lnglat
+          const coords = new LngLat(lng, lat);
+
+          this.addMarker( coords, color );
+        });
+      }
     }
   }
