@@ -76,6 +76,12 @@
 
       this.markers.push( { marker, color } );
       this.saveToLocalStorage();
+
+      // Evento de arrastre
+      marker.on('dragend', () => {
+        this.saveToLocalStorage();
+      }
+      );
     }
 
     deleteMarker( index: number ){
